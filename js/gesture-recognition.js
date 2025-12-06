@@ -119,8 +119,8 @@ export class GestureRecognizer {
             this.hands.setOptions({
                 maxNumHands: 2,
                 modelComplexity: 1, // 0=Lite, 1=Full (精度更高)
-                minDetectionConfidence: 0.6, // 提高置信度阈值，减少误识别
-                minTrackingConfidence: 0.6
+                minDetectionConfidence: 0.4, // 降低阈值以提高灵敏度 (原0.6)
+                minTrackingConfidence: 0.4   // 降低阈值以提高灵敏度 (原0.6)
             });
 
             this.hands.onResults(this.onResults.bind(this));
