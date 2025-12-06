@@ -6,7 +6,7 @@ async function main() {
     const canvasElement = document.querySelector('.output_canvas');
     const sceneContainer = document.querySelector('#scene-container');
     const loadingElement = document.querySelector('#loading');
-    const statusElement = document.querySelector('#loading div:last-child');
+    const statusElement = document.getElementById('loading-text');
 
     // 1. 初始化粒子星球
     const planet = new ParticlePlanet(sceneContainer);
@@ -39,8 +39,13 @@ async function main() {
             display: none;
         `;
         
-        // 插入按钮到 loading 界面
-        loadingElement.insertBefore(startButton, statusElement);
+        // 插入按钮到 loading 界面 (放在宣传链接之前)
+        const promoContainer = document.querySelector('.promo-container');
+        if (promoContainer && promoContainer.parentNode === loadingElement) {
+            loadingElement.insertBefore(startButton, promoContainer);
+        } else {
+            loadingElement.appendChild(startButton);
+        }
 
         // 模型加载完成后显示按钮
         startButton.style.display = 'block';
