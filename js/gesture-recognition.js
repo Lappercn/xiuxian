@@ -130,23 +130,36 @@ export class GestureRecognizer {
         console.log("正在请求摄像头权限...");
         this.gestureState.name = "Requesting Camera...";
         
+        // 检查 HTTPS 环境（移动端强制要求）
+        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+            alert("⚠️ 安全警告：\n浏览器要求必须使用 HTTPS 协议才能访问摄像头。\n\n请确保您的网址是以 https:// 开头的。");
+        }
+
         try {
-            // 使用原生 API 获取视频流
-            const stream = await navigator.mediaDevices.getUserMedia({
+            // 针对移动端的配置优化
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            const constraints = {
                 video: {
-                    width: 320,
-                    height: 240,
-                    frameRate: { ideal: 30 }
+                    width: isMobile ? { ideal: 480 } : 320,
+                    height: isMobile ? { ideal: 640 } : 240,
+                    frameRate: { ideal: 30 },
+                    // PC端不强制 facingMode，避免部分无前置摄像头的设备报错
+                    facingMode: isMobile ? 'user' : undefined
                 },
                 audio: false
-            });
+            };
+
+            // 使用原生 API 获取视频流
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
             this.videoElement.srcObject = stream;
+            // 确保视频自动播放（iOS 需要）
+            this.videoElement.play();
             
             // 等待视频元数据加载完成
             await new Promise((resolve) => {
                 this.videoElement.onloadedmetadata = () => {
-                    this.videoElement.play();
                     resolve();
                 };
             });

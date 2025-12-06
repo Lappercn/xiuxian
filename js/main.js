@@ -20,11 +20,50 @@ async function main() {
         await gestureRecognizer.init();
         
         statusElement.innerText = "请求摄像头权限...";
+        
+        // 创建启动按钮
+        const startButton = document.createElement('button');
+        startButton.innerText = "👆 点击授权启动 / START";
+        startButton.style.cssText = `
+            margin-top: 20px;
+            padding: 15px 40px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            letter-spacing: 2px;
+            display: none;
+        `;
+        
+        // 插入按钮到 loading 界面
+        loadingElement.insertBefore(startButton, statusElement);
+
+        // 模型加载完成后显示按钮
+        startButton.style.display = 'block';
+        statusElement.innerText = "准备就绪，等待启动...";
+        
+        // 等待用户点击
+        await new Promise(resolve => {
+            startButton.onclick = () => {
+                startButton.innerText = "正在启动...";
+                startButton.style.opacity = "0.5";
+                startButton.style.pointerEvents = "none";
+                resolve();
+            };
+        });
+
         // 启动摄像头
         await gestureRecognizer.start();
         
         // 隐藏加载提示
-        loadingElement.style.display = 'none';
+        loadingElement.style.opacity = '0';
+        setTimeout(() => {
+            loadingElement.style.display = 'none';
+        }, 1000);
         console.log("系统启动完成");
     } catch (error) {
         console.error("Initialization failed:", error);
