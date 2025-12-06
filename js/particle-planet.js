@@ -46,7 +46,7 @@ export class ParticlePlanet {
         this.targetColor = this.colors.cyan.clone();
 
         // 粒子数据
-        this.particleCount = 30000; 
+        this.particleCount = 50000; 
         
         // 各形态位置数据
         this.originalPositions = []; // Sphere (丹田)
@@ -95,7 +95,7 @@ export class ParticlePlanet {
 
         // 3. 渲染器
         this.renderer = new THREE.WebGLRenderer({ 
-            antialias: false, 
+            antialias: true, 
             alpha: true,
             powerPreference: "high-performance"
         });
@@ -366,7 +366,7 @@ export class ParticlePlanet {
         const sprite = this.generateSprite();
 
         const material = new THREE.PointsMaterial({
-            size: 4,
+            size: 6,
             map: sprite,
             vertexColors: true,
             blending: THREE.AdditiveBlending,
@@ -418,16 +418,16 @@ export class ParticlePlanet {
 
     generateSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 32;
-        canvas.height = 32;
+        canvas.width = 128;
+        canvas.height = 128;
         const context = canvas.getContext('2d');
-        const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
+        const gradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
         gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-        gradient.addColorStop(0.1, 'rgba(255, 255, 255, 0.9)');
-        gradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.3)');
+        gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
+        gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
         context.fillStyle = gradient;
-        context.fillRect(0, 0, 32, 32);
+        context.fillRect(0, 0, 128, 128);
         const texture = new THREE.Texture(canvas);
         texture.needsUpdate = true;
         return texture;
