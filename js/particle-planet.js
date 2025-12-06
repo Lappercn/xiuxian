@@ -616,12 +616,19 @@ export class ParticlePlanet {
             // 位置跟随逻辑
             const rangeX = 600; 
             const rangeY = 350;
-            // 镜像修正: 摄像头通常是镜像的，如果手往右(屏幕右边)，希望物体也往右
-            const tx = (gestureData.position.x - 0.5) * 2 * rangeX;
+            // 镜像修正: 
+            // 1. 摄像头画面在CSS中被镜像翻转了(transform: scaleX(-1))，这符合用户照镜子的直觉
+            // 2. MediaPipe 返回的 x 坐标基于原始视频帧：0(左) -> 1(右)
+            // 3. 用户物理向右移动 -> 摄像头内物体向左移动(x 变小) -> 屏幕上因为镜像显示，看起来是手在向右移动
+            // 4. 因此：当 x 变小(趋向0)时，我们希望物体向右移动(tx 变大)
+            const tx = -(gestureData.position.x - 0.5) * 2 * rangeX;
             const ty = -(gestureData.position.y - 0.5) * 2 * rangeY;
             this.targetPosition.set(tx, ty, 0);
+            
             this.targetTiltX = (gestureData.position.y - 0.5) * 0.6;
-            this.targetTiltZ = -(gestureData.position.x - 0.5) * 0.4;
+            // 随动倾斜：往右移(x减小) -> 希望向右倾斜(Z轴负旋转，顺时针)
+            // x=0(右移) -> -0.5 -> 结果为负 -> 正确
+            this.targetTiltZ = (gestureData.position.x - 0.5) * 0.4;
 
         } else {
             // 无手势 -> 归元
