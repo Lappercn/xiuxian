@@ -30,23 +30,23 @@ export class ParticlePlanet {
         this.targetExpansion = 1.0;
         this.expansion = 1.0;
         
-        // 修仙色系
+        // 修仙色系 - 更加精致、具有魔法感的配色
         this.colors = {
-            cyan: new THREE.Color(0x00ffff),   // 灵气 (Idle)
-            gold: new THREE.Color(0xffd700),   // 佛光 (Open/Sword)
-            purple: new THREE.Color(0xbc13fe), // 幻术 (Victory/Dragon)
-            red: new THREE.Color(0xff1111),    // 杀意 (Closed/Blackhole)
-            white: new THREE.Color(0xffffff),  // 纯净 (Pointing/Beam)
-            green: new THREE.Color(0x00ffaa),   // 八卦 (OK/Bagua)
-            blue: new THREE.Color(0x0077ff),    // 雷引 (Rock/Lightning)
-            orange: new THREE.Color(0xff5500)   // 真火 (ThumbUp/Fire)
+            cyan: new THREE.Color(0x00f2ff),   // 灵气 (Idle) - 亮青色
+            gold: new THREE.Color(0xffd000),   // 佛光 (Open/Sword) - 纯金
+            purple: new THREE.Color(0xd400ff), // 幻术 (Victory/Dragon) - 霓虹紫
+            red: new THREE.Color(0xff3366),    // 杀意 (Closed/Blackhole) - 玫红/赤红
+            white: new THREE.Color(0xe6f0ff),  // 纯净 (Pointing/Beam) - 冷白
+            green: new THREE.Color(0x00ff99),   // 八卦 (OK/Bagua) - 荧光绿
+            blue: new THREE.Color(0x0066ff),    // 雷引 (Rock/Lightning) - 电光蓝
+            orange: new THREE.Color(0xff6600)   // 真火 (ThumbUp/Fire) - 炽热橙
         };
         
         this.currentColor = this.colors.cyan.clone();
         this.targetColor = this.colors.cyan.clone();
 
         // 粒子数据
-        this.particleCount = 50000; 
+        this.particleCount = 60000; // 增加粒子数量以提升细腻度
         
         // 各形态位置数据
         this.originalPositions = []; // Sphere (丹田)
@@ -366,13 +366,13 @@ export class ParticlePlanet {
         const sprite = this.generateSprite();
 
         const material = new THREE.PointsMaterial({
-            size: 6,
+            size: 5, // 稍微减小基础尺寸，因为数量多了
             map: sprite,
             vertexColors: true,
             blending: THREE.AdditiveBlending,
             depthTest: false,
             transparent: true,
-            opacity: 0.9,
+            opacity: 0.7, // 降低透明度以获得更细腻的叠加
             sizeAttenuation: true
         });
 
@@ -421,13 +421,30 @@ export class ParticlePlanet {
         canvas.width = 128;
         canvas.height = 128;
         const context = canvas.getContext('2d');
+        
+        // 核心光点 - 增强中心亮度
         const gradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
         gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-        gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
-        gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
+        gradient.addColorStop(0.1, 'rgba(255, 255, 255, 1)'); // 扩大实心核心
+        gradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.4)');
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        
         context.fillStyle = gradient;
         context.fillRect(0, 0, 128, 128);
+        
+        // 添加十字星芒效果
+        context.globalCompositeOperation = 'source-over';
+        const starGradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
+        starGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+        starGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        
+        context.fillStyle = starGradient;
+        
+        // 横向光芒
+        context.fillRect(32, 62, 64, 4);
+        // 纵向光芒
+        context.fillRect(62, 32, 4, 64);
+
         const texture = new THREE.Texture(canvas);
         texture.needsUpdate = true;
         return texture;
@@ -446,8 +463,8 @@ export class ParticlePlanet {
         // 环境参数
         let targetFogColor = new THREE.Color(0x050510);
         let targetFogDensity = 0.0015;
-        let targetBloomStrength = 1.8;
-        let targetBloomRadius = 0.8;
+        let targetBloomStrength = 1.6; // 稍微降低默认强度，避免过曝
+        let targetBloomRadius = 0.6;
         let starfieldMode = 'idle';
 
         if (gestureData.isPresent) {

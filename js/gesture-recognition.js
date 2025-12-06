@@ -53,9 +53,15 @@ export class GestureRecognizer {
             if (progressContainer) progressContainer.style.display = 'block';
             if (loadingText) loadingText.innerText = `正在下载 AI 模型 (${stepInfo})...`;
             
-            const percent = Math.min(100, Math.round((loaded / total) * 100));
-            if (progressBar) progressBar.style.width = `${percent}%`;
-            if (progressDetail) progressDetail.innerText = `${fileName} (${(loaded/1024/1024).toFixed(1)}MB / ${(total/1024/1024).toFixed(1)}MB)`;
+            if (total > 0) {
+                const percent = Math.min(100, Math.round((loaded / total) * 100));
+                if (progressBar) progressBar.style.width = `${percent}%`;
+                if (progressDetail) progressDetail.innerText = `${fileName} (${(loaded/1024/1024).toFixed(1)}MB / ${(total/1024/1024).toFixed(1)}MB)`;
+            } else {
+                // 无法获取大小时的显示
+                if (progressBar) progressBar.style.width = '100%';
+                if (progressDetail) progressDetail.innerText = `${fileName} (${(loaded/1024/1024).toFixed(1)}MB)`;
+            }
         };
 
         const fetchWithProgress = (url, stepInfo) => {
@@ -68,6 +74,8 @@ export class GestureRecognizer {
                 xhr.onprogress = (event) => {
                     if (event.lengthComputable) {
                         updateProgress(event.loaded, event.total, fileName, stepInfo);
+                    } else {
+                        updateProgress(event.loaded, 0, fileName, stepInfo);
                     }
                 };
 
