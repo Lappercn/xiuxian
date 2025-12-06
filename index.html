@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星际粒子 - 手势操控增强版</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Import Map 用于管理 Three.js 模块依赖 -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./js/vendor/three/build/three.module.js",
+                "three/addons/": "./js/vendor/three/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- MediaPipe (本地脚本引入) -->
+    <script src="js/vendor/mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="js/vendor/mediapipe/control_utils/control_utils.js"></script>
+    <script src="js/vendor/mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="js/vendor/mediapipe/hands/hands.js"></script>
+</head>
+<body>
+    <!-- 提示信息 -->
+    <div id="loading">
+            <div class="spinner"></div>
+            <div id="loading-text">初始化神经连接中...</div>
+            <div id="progress-bar-container" style="width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 10px; overflow: hidden; display: none;">
+                <div id="progress-bar" style="width: 0%; height: 100%; background: #00ffff; transition: width 0.3s;"></div>
+            </div>
+            <div id="progress-detail" style="font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 5px;"></div>
+            
+            <div style="margin-top: 20px; font-size: 12px; color: rgba(255,255,255,0.6); text-align: center; line-height: 1.6;">
+                <div>官方网站: <a href="https://tongzhilian.cn" target="_blank" style="color: #00ffff; text-decoration: none;">tongzhilian.cn</a></div>
+                <div>开源仓库: <a href="https://github.com/Lappercn/xiuxian.git" target="_blank" style="color: #00ffff; text-decoration: none;">GitHub</a></div>
+                <div style="margin-top: 5px;">加入我们，共创修仙元宇宙！</div>
+            </div>
+        </div>
+    
+    <div id="instruction">
+        <h2>🕹️ 指挥官手册</h2>
+        <div class="gesture-grid">
+            <div class="gesture-item">
+                <span class="icon">🖐</span>
+                <span class="desc"><b>万剑归宗</b><br>张开手掌</span>
+            </div>
+            <div class="gesture-item">
+                <span class="icon">✊</span>
+                <span class="desc"><b>混沌黑洞</b><br>握紧拳头</span>
+            </div>
+            <div class="gesture-item">
+                <span class="icon">✌️</span>
+                <span class="desc"><b>双龙戏珠</b><br>剪刀手</span>
+            </div>
+            <div class="gesture-item">
+                <span class="icon">👌</span>
+                <span class="desc"><b>八卦阵</b><br>OK手势</span>
+            </div>
+            <div class="gesture-item">
+                <span class="icon">☝️</span>
+                <span class="desc"><b>通天光柱</b><br>食指指向</span>
+            </div>
+            <div class="gesture-item">
+                <span class="icon">🤘</span>
+                <span class="desc"><b>九天雷引</b><br>摇滚手势</span>
+            </div>
+            <div class="gesture-item">
+                <span class="icon">👍</span>
+                <span class="desc"><b>三昧真火</b><br>竖大拇指</span>
+            </div>
+            <div class="gesture-item">
+                <span class="icon">👐</span>
+                <span class="desc"><b>三角封印</b><br>双手结印</span>
+            </div>
+            <div class="gesture-item">
+                <span class="icon">🙏</span>
+                <span class="desc"><b>金钟罩</b><br>双手合十</span>
+            </div>
+            <div class="gesture-item">
+                <span class="icon">↔️</span>
+                <span class="desc"><b>开天辟地</b><br>双手拉开</span>
+            </div>
+        </div>
+        <div style="margin-top: 15px; font-size: 11px; color: #888; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+            💡 提示: 移动手部可改变视角与光影
+        </div>
+        <div id="status-bar">当前状态: <span>待命</span></div>
+        <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 12px; color: rgba(255,255,255,0.6);">
+            我们的团队需要更多的人一起参与欢迎加入: <a href="http://www.tongzhilian.cn" target="_blank" style="color: #00ffff; text-decoration: none; transition: color 0.3s;">www.tongzhilian.cn</a>
+        </div>
+    </div>
+
+    <!-- 摄像头预览 -->
+    <div class="camera-container">
+        <video class="input_video"></video>
+        <canvas class="output_canvas" width="320" height="240"></canvas>
+        <div class="camera-label">SENSOR FEED</div>
+    </div>
+
+    <!-- 3D 场景容器 -->
+    <div id="scene-container"></div>
+
+    <!-- 业务逻辑 -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
