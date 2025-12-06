@@ -46,7 +46,8 @@ export class ParticlePlanet {
         this.targetColor = this.colors.cyan.clone();
 
         // 粒子数据
-        this.particleCount = 60000; // 增加粒子数量以提升细腻度
+        // 减少粒子数量，追求"少而精"的高级感，避免密集恐惧症
+        this.particleCount = 15000; 
         
         // 各形态位置数据
         this.originalPositions = []; // Sphere (丹田)
@@ -350,11 +351,23 @@ export class ParticlePlanet {
             // 通用属性
             this.particleSpeeds.push(Math.random() * 0.02 + 0.005);
             
-            color.copy(this.colors.cyan);
-            const l = 0.5 + Math.random() * 0.5;
+            const color = new THREE.Color();
+            // 颜色随机偏移一点，增加层次感
+            const hueOffset = (Math.random() - 0.5) * 0.1;
+            color.copy(this.colors.cyan).offsetHSL(hueOffset, 0, 0);
+            
+            const l = 0.8 + Math.random() * 0.2; // 整体偏亮
             colors.push(color.r * l, color.g * l, color.b * l);
             
-            const size = Math.random() * 2.0 + 0.5;
+            // 大小分布：二八定律
+            // 20% 的粒子是核心大粒子 (Size 5-10)
+            // 80% 的粒子是氛围小粒子 (Size 1-3)
+            let size;
+            if (Math.random() < 0.2) {
+                size = 5.0 + Math.random() * 5.0;
+            } else {
+                size = 1.0 + Math.random() * 2.0;
+            }
             sizes.push(size);
             this.particleSizes.push(size);
         }
@@ -366,13 +379,13 @@ export class ParticlePlanet {
         const sprite = this.generateSprite();
 
         const material = new THREE.PointsMaterial({
-            size: 5, // 稍微减小基础尺寸，因为数量多了
+            size: 6, // 基础尺寸，会与 attribute 相乘
             map: sprite,
             vertexColors: true,
             blending: THREE.AdditiveBlending,
             depthTest: false,
             transparent: true,
-            opacity: 0.7, // 降低透明度以获得更细腻的叠加
+            opacity: 0.85, // 提升不透明度，因为数量少了
             sizeAttenuation: true
         });
 
@@ -422,28 +435,27 @@ export class ParticlePlanet {
         canvas.height = 128;
         const context = canvas.getContext('2d');
         
-        // 核心光点 - 增强中心亮度
-        const gradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
-        gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-        gradient.addColorStop(0.1, 'rgba(255, 255, 255, 1)'); // 扩大实心核心
-        gradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.4)');
-        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        // 1. 柔和的光晕底色
+        const glowGradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
+        glowGradient.addColorStop(0, 'rgba(255, 255, 255, 1)'); // 中心极亮
+        glowGradient.addColorStop(0.15, 'rgba(255, 255, 255, 0.6)'); // 核心区
+        glowGradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.1)'); // 扩散区
+        glowGradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // 边缘完全透明
         
-        context.fillStyle = gradient;
+        context.fillStyle = glowGradient;
         context.fillRect(0, 0, 128, 128);
         
-        // 添加十字星芒效果
+        // 2. 极其微弱的十字星芒 (仅在核心处)
+        // 减少星芒的长度和不透明度，避免在远处看起来像噪点
         context.globalCompositeOperation = 'source-over';
         const starGradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
         starGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-        starGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        starGradient.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
         
         context.fillStyle = starGradient;
-        
-        // 横向光芒
-        context.fillRect(32, 62, 64, 4);
-        // 纵向光芒
-        context.fillRect(62, 32, 4, 64);
+        // 变短、变淡
+        context.fillRect(48, 63, 32, 2); // 横
+        context.fillRect(63, 48, 2, 32); // 竖
 
         const texture = new THREE.Texture(canvas);
         texture.needsUpdate = true;
