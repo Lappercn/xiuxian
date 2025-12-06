@@ -106,21 +106,21 @@ export class GestureRecognizer {
             const assetsDataUrl = await fetchWithProgress('js/vendor/mediapipe/hands/hands_solution_packed_assets.data', '2/3');
             
             // 3. TFLite (模型) ~5.6MB (Full) / ~2.9MB (Lite)
-            // 根据 modelComplexity: 0，我们需要下载 lite 模型
-            const tfliteUrl = await fetchWithProgress('js/vendor/mediapipe/hands/hand_landmark_lite.tflite', '3/3');
+            // 改用 Full 模型以获得更好的精度和抗抖动能力
+            const tfliteUrl = await fetchWithProgress('js/vendor/mediapipe/hands/hand_landmark_full.tflite', '3/3');
 
             this.hands = new window.Hands({locateFile: (file) => {
                 if (file.endsWith('hands_solution_simd_wasm_bin.wasm')) return wasmUrl;
                 if (file.endsWith('hands_solution_packed_assets.data')) return assetsDataUrl;
-                if (file.endsWith('hand_landmark_lite.tflite')) return tfliteUrl;
+                if (file.endsWith('hand_landmark_full.tflite')) return tfliteUrl;
                 return `js/vendor/mediapipe/hands/${file}`;
             }});
 
             this.hands.setOptions({
                 maxNumHands: 2,
-                modelComplexity: 0,
-                minDetectionConfidence: 0.5,
-                minTrackingConfidence: 0.5
+                modelComplexity: 1, // 0=Lite, 1=Full (精度更高)
+                minDetectionConfidence: 0.6, // 提高置信度阈值，减少误识别
+                minTrackingConfidence: 0.6
             });
 
             this.hands.onResults(this.onResults.bind(this));
@@ -149,8 +149,8 @@ export class GestureRecognizer {
             
             const constraints = {
                 video: {
-                    width: isMobile ? { ideal: 480 } : 320,
-                    height: isMobile ? { ideal: 640 } : 240,
+                    width: isMobile ? { ideal: 720 } : { ideal: 1280 },
+                    height: isMobile ? { ideal: 1280 } : { ideal: 720 },
                     frameRate: { ideal: 30 },
                     // PC端不强制 facingMode，避免部分无前置摄像头的设备报错
                     facingMode: isMobile ? 'user' : undefined
