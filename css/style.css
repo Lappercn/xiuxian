@@ -243,6 +243,61 @@ body {
     text-shadow: none;
 }
 
+/* =========================================
+   🚀 启动按钮 & 进度条 (Start Button & Progress)
+   ========================================= */
+#start-btn {
+    margin-top: 30px;
+    padding: 15px 40px;
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    color: #00ffff;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    letter-spacing: 2px;
+    display: none; /* 默认隐藏，JS控制显示 */
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+#start-btn:hover {
+    background: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+#start-btn:active {
+    transform: scale(0.98);
+}
+
+#progress-bar-container {
+    width: 240px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin-top: 20px;
+    overflow: hidden;
+    display: none; /* JS控制显示 */
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #00ffff;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+#progress-detail {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+}
+
 .promo-btn:hover::before {
     left: 100%;
 }

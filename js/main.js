@@ -21,32 +21,9 @@ async function main() {
         
         statusElement.innerText = "请求摄像头权限...";
         
-        // 创建启动按钮
-        const startButton = document.createElement('button');
-        startButton.innerText = "👆 点击授权启动 / START";
-        startButton.style.cssText = `
-            margin-top: 20px;
-            padding: 15px 40px;
-            background: rgba(0, 255, 255, 0.2);
-            border: 2px solid #00ffff;
-            color: #00ffff;
-            font-size: 18px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
-            letter-spacing: 2px;
-            display: none;
-        `;
+        // 获取 HTML 中的启动按钮
+        const startButton = document.getElementById('start-btn');
         
-        // 插入按钮到 loading 界面 (放在宣传链接之前)
-        const promoContainer = document.querySelector('.promo-container');
-        if (promoContainer && promoContainer.parentNode === loadingElement) {
-            loadingElement.insertBefore(startButton, promoContainer);
-        } else {
-            loadingElement.appendChild(startButton);
-        }
-
         // 模型加载完成后显示按钮
         startButton.style.display = 'block';
         statusElement.innerText = "准备就绪，等待启动...";

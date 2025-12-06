@@ -27,15 +27,20 @@
     <div id="loading">
             <div class="spinner"></div>
             <div id="loading-text">初始化神经连接中...</div>
-            <div id="progress-bar-container" style="width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 10px; overflow: hidden; display: none;">
-                <div id="progress-bar" style="width: 0%; height: 100%; background: #00ffff; transition: width 0.3s;"></div>
-            </div>
-            <div id="progress-detail" style="font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 5px;"></div>
             
+            <!-- 进度条 -->
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+            <div id="progress-detail"></div>
+            
+            <!-- 启动按钮 (默认隐藏) -->
+            <button id="start-btn">👆 点击授权启动 / START</button>
+
             <div class="promo-container">
                 <div class="promo-item">
                     <div class="promo-text">官方网站 / Official Website</div>
-                    <a href="https://tongzhilian.cn" target="_blank" class="promo-btn">
+                    <a href="https://www.tongzhilian.cn" target="_blank" class="promo-btn">
                         tongzhilian.cn <span>点击访问 →</span>
                     </a>
                 </div>
